@@ -75,6 +75,14 @@ Open the URL printed by Streamlit (usually `http://localhost:8501` or `http://lo
 - The input box appears below the conversation; when you submit a message it shows immediately, then the assistant streams its reply below it.
 - If you see out-of-order messages, restart the app and ensure only one server instance is running.
 
+### New behaviors added in code
+- 🔁 Serial chat order: messages are appended and displayed in strict chronological order (user → assistant). The chat input is placed below the conversation so new messages appear at the bottom.
+- 🔔 Generating badge: while the model streams a response, a small "Generating…" badge is shown near the conversation to indicate progress.
+- 🔀 Auto-send OCR toggle: there is a new sidebar checkbox `Auto-send OCR to model` (default: enabled). When enabled, OCR results from images or PDFs are automatically sent to the model. When disabled, OCR text is appended to the chat and a manual "Send OCR" button appears.
+- 🧾 Improved PDF OCR: for pages where `pdfplumber` can't extract text (scanned/image PDFs), the app falls back to running Tesseract OCR on the page image to capture embedded text.
+- ⌨️ Hotkey / quick send: a "Send last OCR (Alt+S)" control is available; pressing Alt+S (or clicking the link) will send the most recent OCR result to the model. This uses `st.query_params` and `st.set_query_params()` internally.
+- 🔒 Safe streaming & append: assistant streaming output is shown in a single assistant bubble and appended to the message history only once when generation finishes.
+
 ---
 
 ## 🛠 Configuration
