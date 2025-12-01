@@ -126,3 +126,6 @@ Install with `pip install -r requirements.txt`.
 
 ---
 Made with ❤️ and neon vibes ✨
+
+## 📜 License
+This project is released under the MIT License — see the `LICENSE` file for details.
