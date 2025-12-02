@@ -3,11 +3,13 @@
 <!-- Tech stack badges (styled like buttons) -->
 [![Streamlit](https://img.shields.io/badge/Streamlit-%23FF4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io) [![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org) [![Ollama](https://img.shields.io/badge/Ollama-%23000000.svg?style=for-the-badge)](https://ollama.ai) [![Tesseract](https://img.shields.io/badge/Tesseract-%23007ACC.svg?style=for-the-badge)](https://github.com/tesseract-ocr/tesseract) [![Pillow](https://img.shields.io/badge/Pillow-%23DD0031.svg?style=for-the-badge&logo=python&logoColor=white)](https://python-pillow.org) [![pdfplumber](https://img.shields.io/badge/pdfplumber-%23007ACC.svg?style=for-the-badge)](https://github.com/jsvine/pdfplumber)
 
+[![Infosys Springboard](https://img.shields.io/badge/Infosys-Springboard-blue?style=for-the-badge)](https://www.infosys.com/)
+
 DebAI is a lightweight, cyberpunk-styled Streamlit chat assistant that extracts text from images and PDFs (OCR) and chats using an Ollama-backed model. Built for fast testing and local experimentation. ✨
 
 ---
 
-## ✨ Features
+# ✨ Features
 - 🖼 Image OCR (Tesseract via `pytesseract`)
 - 📄 PDF text extraction (`pdfplumber`)
 - 🧠 Streaming chat with an Ollama model
@@ -15,14 +17,14 @@ DebAI is a lightweight, cyberpunk-styled Streamlit chat assistant that extracts 
 
 ---
 
-## ⚙️ Requirements
+# ⚙️ Requirements
 - Python 3.10+ (tested with Python 3.12)
 - Tesseract OCR installed and accessible (Windows default path is used in `AI.py`)
 - (Optional) Ollama running locally if you want local model inference
 
 ---
 
-## 🛠️ Setup (Windows)
+# 🛠️ Setup (Windows)
 1. Open the project directory:
 
 ```bash
@@ -55,7 +57,7 @@ pip install streamlit ollama pillow pytesseract pdfplumber
 
 ---
 
-## ▶️ Run the app
+# ▶️ Run the app
 From the project root (with virtualenv active):
 
 ```bash
@@ -70,12 +72,12 @@ Open the URL printed by Streamlit (usually `http://localhost:8501` or `http://lo
 
 ---
 
-## 💡 UI & Chat Order Notes
+# 💡 UI & Chat Order Notes
 - Messages are displayed in strict serial order (oldest → newest).
 - The input box appears below the conversation; when you submit a message it shows immediately, then the assistant streams its reply below it.
 - If you see out-of-order messages, restart the app and ensure only one server instance is running.
 
-### New behaviors added in code
+## New behaviors added in code
 - 🔁 Serial chat order: messages are appended and displayed in strict chronological order (user → assistant). The chat input is placed below the conversation so new messages appear at the bottom.
 - 🔔 Generating badge: while the model streams a response, a small "Generating…" badge is shown near the conversation to indicate progress.
 - 🔀 Auto-send OCR toggle: there is a new sidebar checkbox `Auto-send OCR to model` (default: enabled). When enabled, OCR results from images or PDFs are automatically sent to the model. When disabled, OCR text is appended to the chat and a manual "Send OCR" button appears.
@@ -85,7 +87,7 @@ Open the URL printed by Streamlit (usually `http://localhost:8501` or `http://lo
 
 ---
 
-## 🛠 Configuration
+# 🛠 Configuration
 - Tesseract path in `AI.py`:
 
 ```python
@@ -104,14 +106,14 @@ Update `MODEL` to a model you have locally (or an available Ollama model).
 
 ---
 
-## 🔧 Troubleshooting
+# 🔧 Troubleshooting
 - Blank Streamlit page: ensure Streamlit is installed and the server prints the local URL. Try a hard refresh.
 - OCR returns empty text: confirm Tesseract is installed and `tesseract_cmd` is correct.
 - Ollama chat fails: verify Ollama is running and reachable.
 
 ---
 
-## 📦 Optional: `requirements.txt`
+# 📦 Optional: `requirements.txt`
 Create a `requirements.txt` with:
 
 ```
@@ -127,5 +129,5 @@ Install with `pip install -r requirements.txt`.
 ---
 Made with ❤️ and neon vibes ✨
 
-## 📜 License
+# 📜 License
 This project is released under the MIT License — see the `LICENSE` file for details.
