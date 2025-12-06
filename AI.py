@@ -1,5 +1,18 @@
 import streamlit as st
-import ollama
+try:
+    import ollama
+    OLLAMA_AVAILABLE = True
+except Exception:
+    # Ollama may not be available in hosted environments (Streamlit Cloud)
+    ollama = None
+    OLLAMA_AVAILABLE = False
+import os
+try:
+    import openai
+    OPENAI_AVAILABLE = True
+except Exception:
+    openai = None
+    OPENAI_AVAILABLE = False
 from PIL import Image
 import pytesseract
 import pdfplumber
@@ -7,6 +20,7 @@ import pdfplumber
 # ================== CONFIG ==================
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 MODEL = "gemma3:1b"
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
 st.set_page_config(
     page_title="DebAI",
@@ -87,6 +101,8 @@ with st.sidebar:
     # Toggle: auto-send OCR outputs to the model
     auto_send_ocr = st.checkbox("Auto-send OCR to model", value=True, help="When enabled, OCR text (image/PDF) is sent to the model automatically. When disabled, OCR text is only appended to chat and you can send it manually.")
     st.session_state.setdefault("auto_send_ocr", auto_send_ocr)
+    if not OLLAMA_AVAILABLE:
+        st.warning("Ollama client not available in this environment — model responses will be disabled. You can still use OCR features.")
 
 
 # ================== STATE MANAGEMENT ==================
@@ -233,15 +249,59 @@ with main_container:
         st.session_state["current_response"] = ""
 
     def generate():
-        stream = ollama.chat(model=MODEL, stream=True, messages=st.session_state["messages"])
-        response = ""
-        for chunk in stream:
-            text = chunk.get("message", {}).get("content", "")
-            response += text
-            # update session state so reruns can show progress if needed
-            st.session_state["current_response"] = response
-            yield response
-        return response
+            # Prefer Ollama when available (local usage)
+            if OLLAMA_AVAILABLE and ollama is not None:
+                stream = ollama.chat(model=MODEL, stream=True, messages=st.session_state["messages"])
+                response = ""
+                for chunk in stream:
+                    text = chunk.get("message", {}).get("content", "")
+                    response += text
+                    # update session state so reruns can show progress if needed
+                    st.session_state["current_response"] = response
+                    yield response
+                return response
+
+            # Fallback to OpenAI if available and configured (useful on hosted platforms)
+            if OPENAI_AVAILABLE and openai is not None:
+                api_key = os.getenv("OPENAI_API_KEY")
+                if not api_key:
+                    msg = (
+                        "Assistant unavailable: OpenAI API key not set (OPENAI_API_KEY).\n\n"
+                        "Set the environment variable to enable cloud-model fallback."
+                    )
+                    st.session_state["current_response"] = msg
+                    yield msg
+                    return msg
+
+                openai.api_key = api_key
+                response = ""
+                try:
+                    stream = openai.ChatCompletion.create(
+                        model=OPENAI_MODEL, messages=st.session_state["messages"], stream=True
+                    )
+                    for chunk in stream:
+                        # chunk will usually contain a 'choices' array with a 'delta' dict
+                        choice = chunk.get("choices", [{}])[0]
+                        delta = choice.get("delta", {})
+                        text = delta.get("content", "") or choice.get("text", "")
+                        response += text
+                        st.session_state["current_response"] = response
+                        yield response
+                    return response
+                except Exception as e:
+                    msg = f"OpenAI streaming failed: {e}"
+                    st.session_state["current_response"] = msg
+                    yield msg
+                    return msg
+
+            # If neither Ollama nor OpenAI is available, show a helpful message
+            msg = (
+                "Assistant unavailable: no supported model client found (ollama or openai).\n\n"
+                "Use Ollama locally or set OPENAI_API_KEY for cloud-model fallback."
+            )
+            st.session_state["current_response"] = msg
+            yield msg
+            return msg
 
     # If we just got a prompt, stream assistant response below the conversation
     if st.session_state["is_generating"]:
