@@ -20,7 +20,7 @@ import pdfplumber
 # ================== CONFIG ==================
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 MODEL = "gemma3:1b"
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-pro")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 
 st.set_page_config(
     page_title="DebAI",
