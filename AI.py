@@ -8,11 +8,11 @@ except Exception:
     OLLAMA_AVAILABLE = False
 import os
 try:
-    import openai
-    OPENAI_AVAILABLE = True
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
 except Exception:
-    openai = None
-    OPENAI_AVAILABLE = False
+    genai = None
+    GEMINI_AVAILABLE = False
 from PIL import Image
 import pytesseract
 import pdfplumber
@@ -20,7 +20,7 @@ import pdfplumber
 # ================== CONFIG ==================
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 MODEL = "gemma3:1b"
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-pro")
 
 st.set_page_config(
     page_title="DebAI",
@@ -261,12 +261,12 @@ with main_container:
                     yield response
                 return response
 
-            # Fallback to OpenAI if available and configured (useful on hosted platforms)
-            if OPENAI_AVAILABLE and openai is not None:
-                api_key = os.getenv("OPENAI_API_KEY")
+            # Fallback to Gemini if available and configured
+            if GEMINI_AVAILABLE and genai is not None:
+                api_key = os.getenv("GEMINI_API_KEY")
                 if not api_key:
                     msg = (
-                        "Assistant unavailable: OpenAI API key not set (OPENAI_API_KEY).\n\n"
+                        "Assistant unavailable: Gemini API key not set (GEMINI_API_KEY).\n\n"
                         "Set the environment variable to enable cloud-model fallback."
                     )
                     st.session_state["current_response"] = msg
@@ -274,28 +274,35 @@ with main_container:
                     return msg
 
                 try:
-                    client = openai.OpenAI(api_key=api_key)
-                    stream = client.chat.completions.create(
-                        model=OPENAI_MODEL, messages=st.session_state["messages"], stream=True
-                    )
+                    genai.configure(api_key=api_key)
+                    model = genai.GenerativeModel(GEMINI_MODEL)
+                    
+                    # Convert messages to Gemini format
+                    gemini_history = []
+                    for m in st.session_state["messages"][:-1]: # Exclude last message which is the prompt
+                        role = "user" if m["role"] == "user" else "model"
+                        gemini_history.append({"role": role, "parts": [m["content"]]})
+                    
+                    chat = model.start_chat(history=gemini_history)
+                    response_stream = chat.send_message(st.session_state["messages"][-1]["content"], stream=True)
+                    
                     response = ""
-                    for chunk in stream:
-                        if chunk.choices[0].delta.content is not None:
-                            text = chunk.choices[0].delta.content
-                            response += text
-                            st.session_state["current_response"] = response
-                            yield response
+                    for chunk in response_stream:
+                        text = chunk.text
+                        response += text
+                        st.session_state["current_response"] = response
+                        yield response
                     return response
                 except Exception as e:
-                    msg = f"OpenAI streaming failed: {e}"
+                    msg = f"Gemini streaming failed: {e}"
                     st.session_state["current_response"] = msg
                     yield msg
                     return msg
 
-            # If neither Ollama nor OpenAI is available, show a helpful message
+            # If neither Ollama nor Gemini is available, show a helpful message
             msg = (
-                "Assistant unavailable: no supported model client found (ollama or openai).\n\n"
-                "Use Ollama locally or set OPENAI_API_KEY for cloud-model fallback."
+                "Assistant unavailable: no supported model client found (ollama or google-generativeai).\n\n"
+                "Use Ollama locally or set GEMINI_API_KEY for cloud-model fallback."
             )
             st.session_state["current_response"] = msg
             yield msg

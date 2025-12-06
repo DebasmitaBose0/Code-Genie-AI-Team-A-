@@ -2,4 +2,4 @@ streamlit
 pillow
 pytesseract
 pdfplumber
-openai
+google-generativeai
