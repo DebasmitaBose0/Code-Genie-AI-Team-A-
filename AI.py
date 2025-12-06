@@ -273,20 +273,18 @@ with main_container:
                     yield msg
                     return msg
 
-                openai.api_key = api_key
-                response = ""
                 try:
-                    stream = openai.ChatCompletion.create(
+                    client = openai.OpenAI(api_key=api_key)
+                    stream = client.chat.completions.create(
                         model=OPENAI_MODEL, messages=st.session_state["messages"], stream=True
                     )
+                    response = ""
                     for chunk in stream:
-                        # chunk will usually contain a 'choices' array with a 'delta' dict
-                        choice = chunk.get("choices", [{}])[0]
-                        delta = choice.get("delta", {})
-                        text = delta.get("content", "") or choice.get("text", "")
-                        response += text
-                        st.session_state["current_response"] = response
-                        yield response
+                        if chunk.choices[0].delta.content is not None:
+                            text = chunk.choices[0].delta.content
+                            response += text
+                            st.session_state["current_response"] = response
+                            yield response
                     return response
                 except Exception as e:
                     msg = f"OpenAI streaming failed: {e}"
