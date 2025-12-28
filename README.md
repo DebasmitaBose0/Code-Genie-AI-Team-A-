@@ -1,133 +1,126 @@
-# 💬 DebAI
+# 🤖 DebAI — Intelligent OCR & Chat Assistant
 
-<!-- Tech stack badges (styled like buttons) -->
-[![Streamlit](https://img.shields.io/badge/Streamlit-%23FF4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io) [![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org) [![Ollama](https://img.shields.io/badge/Ollama-%23000000.svg?style=for-the-badge)](https://ollama.ai) [![Tesseract](https://img.shields.io/badge/Tesseract-%23007ACC.svg?style=for-the-badge)](https://github.com/tesseract-ocr/tesseract) [![Pillow](https://img.shields.io/badge/Pillow-%23DD0031.svg?style=for-the-badge&logo=python&logoColor=white)](https://python-pillow.org) [![pdfplumber](https://img.shields.io/badge/pdfplumber-%23007ACC.svg?style=for-the-badge)](https://github.com/jsvine/pdfplumber)
+![DebAI Banner](https://img.shields.io/badge/DebAI-Intelligent_Assistant-blue?style=for-the-badge&logo=robot)
+![Python](https://img.shields.io/badge/Python-3.10+-yellow?style=flat-square&logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-[![Infosys Springboard](https://img.shields.io/badge/Infosys-Springboard-blue?style=for-the-badge)](https://www.infosys.com/)
+**DebAI** is a cutting-edge, dual-theme AI assistant built with **Streamlit**. It combines powerful **OCR (Optical Character Recognition)** capabilities with a sophisticated chat interface, wrapped in a stunning **"Ultimate Glassmorphism"** UI.
 
-DebAI is a lightweight, cyberpunk-styled Streamlit chat assistant that extracts text from images and PDFs (OCR) and chats using an Ollama-backed model. Built for fast testing and local experimentation. ✨
-
----
-
-# ✨ Features
-- 🖼 Image OCR (Tesseract via `pytesseract`)
-- 📄 PDF text extraction (`pdfplumber`)
-- 🧠 Streaming chat with an Ollama model
-- 🎨 Cyberpunk-themed Streamlit UI
+Whether you need to extract text from scanned documents, analyze PDFs, or have a conversation with a local (Ollama) or cloud-based (Gemini) LLM, DebAI handles it with style and precision.
 
 ---
 
-# ⚙️ Requirements
-- Python 3.10+ (tested with Python 3.12)
-- Tesseract OCR installed and accessible (Windows default path is used in `AI.py`)
-- (Optional) Ollama running locally if you want local model inference
+## ✨ Key Features
+
+### 🧠 **Dual-Core AI Engine**
+*   **Local Power**: Seamless integration with **Ollama** for running privacy-focused local models (e.g., Gemma, Llama 3).
+*   **Cloud Fallback**: Automatic fallback to **Google Gemini** when local models are unavailable.
+*   **Smart Language Detection**: Automatically detects **Hindi** and **Bengali** inputs and instructs the model to respond in the appropriate script.
+
+### 📄 **Advanced OCR Suite**
+*   **Image OCR**: Extract text from images (`.png`, `.jpg`, `.jpeg`) using **Tesseract**.
+*   **PDF Analysis**: Read and extract text from multi-page PDF documents.
+*   **Auto-Context**: Extracted text is automatically fed into the chat context for immediate analysis.
+
+### 🎨 **Ultimate Glassmorphism UI**
+*   **Dual Theme**: Switch between a **Cinematic Dark Mode** and a **Clean, Airy Light Mode**.
+*   **Visuals**: Features frosted glass cards, animated backgrounds (`orbFloat`), and smooth transitions.
+*   **Responsive**: Perfectly optimized layout for various screen sizes.
+
+### 🛠 **Productivity Tools**
+*   **PDF Export**: Download your entire chat session as a formatted PDF report.
+*   **Hotkeys**: Quick actions like "Send Last OCR" (Alt+S) for rapid workflows.
 
 ---
 
-# 🛠️ Setup (Windows)
-1. Open the project directory:
+## 🛠️ Tech Stack
+
+*   **Frontend**: [Streamlit](https://streamlit.io/)
+*   **OCR Engine**: [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) & [PyTesseract](https://pypi.org/project/pytesseract/)
+*   **PDF Processing**: [pdfplumber](https://github.com/jsvine/pdfplumber)
+*   **AI Models**: [Ollama](https://ollama.com/) (Local) & [Google Gemini](https://ai.google.dev/) (Cloud)
+*   **Report Generation**: [FPDF](https://pyfpdf.readthedocs.io/)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+
+Ensure you have the following installed:
+*   **Python 3.8+**
+*   **[Tesseract OCR](https://github.com/UB-Mannheim/tesseract/wiki)**:
+    *   *Windows*: Download and install the binary. Note the installation path (default: `C:\Program Files\Tesseract-OCR\tesseract.exe`).
+*   **[Ollama](https://ollama.com/)** (Optional, for local models):
+    *   Install Ollama and pull a model: `ollama pull gemma:2b` (or your preferred model).
+
+### 2. Installation
+
+Clone the repository and install dependencies:
 
 ```bash
-cd C:\Users\Debasmita\Desktop\AI
-```
-
-2. Create and activate a virtual environment:
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-3. Install Python dependencies:
-
-```bash
+git clone https://github.com/DebasmitaBose0/Code-Genie-AI-Team-A-.git
+cd Code-Genie-AI-Team-A-
 pip install -r requirements.txt
 ```
 
-Or install directly:
+### 3. Configuration
 
-```bash
-pip install streamlit ollama pillow pytesseract pdfplumber
+DebAI works out-of-the-box with Ollama. To use Google Gemini as a fallback, set your API key:
+
+**Windows (PowerShell):**
+```powershell
+$env:GEMINI_API_KEY="your_api_key_here"
 ```
 
-4. Install Tesseract OCR (Windows):
-- Download and install Tesseract (e.g., to `C:\Program Files\Tesseract-OCR`) and ensure the path matches `pytesseract.pytesseract.tesseract_cmd` in `AI.py`.
+**Linux/Mac:**
+```bash
+export GEMINI_API_KEY="your_api_key_here"
+```
 
-5. (Optional) Run Ollama and ensure a compatible model is available (change `MODEL` in `AI.py` if needed).
+*(Optional)* You can also configure the Tesseract path in `AI.py` if it differs from the default.
 
----
+### 4. Run the App
 
-# ▶️ Run the app
-From the project root (with virtualenv active):
+Launch the application using Streamlit:
 
 ```bash
-# Unix / macOS
 streamlit run AI.py
-
-# Windows (venv python)
-.venv\Scripts\python.exe -m streamlit run AI.py
 ```
 
-Open the URL printed by Streamlit (usually `http://localhost:8501` or `http://localhost:8502`). 🔗
+The app will open in your default browser at `http://localhost:8501`.
 
 ---
 
-# 💡 UI & Chat Order Notes
-- Messages are displayed in strict serial order (oldest → newest).
-- The input box appears below the conversation; when you submit a message it shows immediately, then the assistant streams its reply below it.
-- If you see out-of-order messages, restart the app and ensure only one server instance is running.
+## 📖 Usage Guide
 
-## New behaviors added in code
-- 🔁 Serial chat order: messages are appended and displayed in strict chronological order (user → assistant). The chat input is placed below the conversation so new messages appear at the bottom.
-- 🔔 Generating badge: while the model streams a response, a small "Generating…" badge is shown near the conversation to indicate progress.
-- 🔀 Auto-send OCR toggle: there is a new sidebar checkbox `Auto-send OCR to model` (default: enabled). When enabled, OCR results from images or PDFs are automatically sent to the model. When disabled, OCR text is appended to the chat and a manual "Send OCR" button appears.
-- 🧾 Improved PDF OCR: for pages where `pdfplumber` can't extract text (scanned/image PDFs), the app falls back to running Tesseract OCR on the page image to capture embedded text.
-- ⌨️ Hotkey / quick send: a "Send last OCR (Alt+S)" control is available; pressing Alt+S (or clicking the link) will send the most recent OCR result to the model. This uses `st.query_params` and `st.set_query_params()` internally.
-- 🔒 Safe streaming & append: assistant streaming output is shown in a single assistant bubble and appended to the message history only once when generation finishes.
+1.  **Upload Documents**: Use the sidebar or top tabs to upload Images or PDFs.
+2.  **Extract Text**: The app will automatically extract text. You can choose to send it to the AI immediately or edit/review it.
+3.  **Chat**: Type your queries in the chat bar. The AI has context of your uploaded documents.
+4.  **Switch Themes**: Toggle between Light and Dark mode using the button in the top-right corner.
+5.  **Export**: Click "Download Report (PDF)" in the sidebar to save your conversation.
 
 ---
 
-# 🛠 Configuration
-- Tesseract path in `AI.py`:
+## 🤝 Contributing
 
-```python
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-Change this path if Tesseract is installed elsewhere.
-
-- Ollama model:
-
-```python
-MODEL = "gemma3:1b"
-```
-
-Update `MODEL` to a model you have locally (or an available Ollama model).
+1.  Fork the project
+2.  Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
 ---
 
-# 🔧 Troubleshooting
-- Blank Streamlit page: ensure Streamlit is installed and the server prints the local URL. Try a hard refresh.
-- OCR returns empty text: confirm Tesseract is installed and `tesseract_cmd` is correct.
-- Ollama chat fails: verify Ollama is running and reachable.
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-# 📦 Optional: `requirements.txt`
-Create a `requirements.txt` with:
-
-```
-streamlit
-ollama
-pillow
-pytesseract
-pdfplumber
-```
-
-Install with `pip install -r requirements.txt`.
-
----
-Made with ❤️ and neon vibes ✨
-
-# 📜 License
-This project is released under the MIT License — see the `LICENSE` file for details.
+<div align="center">
+  <b>Made with ❤️ by Debasmita Bose</b>
+</div>
